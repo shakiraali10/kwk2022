@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "288-2889945_black-and-white-flower-border-clipart-all-about.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
