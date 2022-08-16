@@ -8,24 +8,37 @@
 import UIKit
 
 class ToDoTableViewController: UITableViewController {
-    var listOfToDo : [ToDoClass] = [] //this is an array
+    var listOfToDo : [ToDoCD] = [] //this is an array
     
-    func createToDo() -> [ToDoClass] {
-        let swiftToDo = ToDoClass()
-        swiftToDo.description = "Learn Swift"
-        swiftToDo.important = true
+    //func createToDo() -> [ToDoClass] {
+   //     let swiftToDo = ToDoClass()
+   //     swiftToDo.description = "Learn Swift"
+   //     swiftToDo.important = true
         
-        let dogToDo = ToDoClass()
-        dogToDo.description = "Walk the Dog"
+   //     let dogToDo = ToDoClass()
+    //    dogToDo.description = "Walk the Dog"
         
-        return [swiftToDo, dogToDo]
-    } // end of create function
+   //     return [swiftToDo, dogToDo]
+   // } // end of create function
     
     
-
+    func getToDos() {
+        if let accessToCoreData =
+            (UIApplication.shared.delegate as?
+             AppDelegate)?.persistentContainer.viewContext {
+            
+            if let dataFromCoreData = try?
+                accessToCoreData.fetch(ToDoCD.fetchRequest()) as? [ToDoCD]
+            {
+            
+                listOfToDo = dataFromCoreData
+                tableView.reloadData()
+            }
+        }
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
-        listOfToDo = createToDo()
+       // listOfToDo = createToDo()
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -47,17 +60,29 @@ class ToDoTableViewController: UITableViewController {
 
         // Configure the cell...
         let eachToDo = listOfToDo[indexPath.row]
-        
-        performSegue(withIdentifier: "moveToCompletedToDoVC" , sender: eachToDo)
-        
-        if eachToDo.important {
-            cell.textLabel?.text = " 🤯 " + eachToDo.description
-        } else {
-            cell.textLabel?.text = eachToDo.description
+        if let thereIsDescription = eachToDo.descriptionInCD {
+            if eachToDo.importantInCD {
+                cell.textLabel?.text = " 👀 " + thereIsDescription
+            } else {
+                cell.textLabel?.text = eachToDo.descriptionInCD
+            }
         }
+        
         return cell
+    
+//        performSegue(withIdentifier: "moveToCompletedToDoVC" , sender: eachToDo)
+//
+//        if eachToDo.importantInCD {
+//            cell.textLabel?.text = " 🤯 " + eachToDo.descriptionInCD
+//        } else {
+//            cell.textLabel?.text = eachToDo.descriptionInCD
+//        }
+//        return cell
     }
     
+    override func viewWillAppear(_ animated : Bool) {
+        getToDos()
+    }
 
     
     // MARK: - Navigation
@@ -71,7 +96,7 @@ class ToDoTableViewController: UITableViewController {
 
         if let nextCompletedToDoVC = segue.destination as?
         CompletedToDoViewController {
-            if let choosenToDo = sender as? ToDoClass {
+            if let choosenToDo = sender as? ToDoCD {
                 nextCompletedToDoVC.selectedToDo = choosenToDo
                 nextCompletedToDoVC.previousToDoTVC = self
             }

@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import CoreData
 class AddToDoViewController: UIViewController {
 var previousToDoTVC = ToDoTableViewController()
     @IBOutlet weak var descriptionInput: UITextField!
@@ -19,18 +19,32 @@ var previousToDoTVC = ToDoTableViewController()
     }
     
     @IBAction func addButtonTapped(_ sender: UIButton) {
-        let newToDo = ToDoClass()
+//        let newToDo = ToDoClass()
+//        
+//        if let checkForInput = descriptionInput.text {
+//            newToDo.description = checkForInput
+//            newToDo.important = switchImput.isOn
+//        
+//        
+//        previousToDoTVC.listOfToDo.append(newToDo)
+//        previousToDoTVC.tableView.reloadData()
+//        navigationController?.popViewController(animated: true)
+//    
+//        }
         
-        if let checkForInput = descriptionInput.text {
-            newToDo.description = checkForInput
-            newToDo.important = switchImput.isOn
+        guard let accessToCoreData = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        let dataFromCoreData = accessToCoreData.persistentContainer.viewContext
+        let newToDo = ToDoCD(context: dataFromCoreData)
+        newToDo.descriptionInCD = descriptionInput.text
+        newToDo.importantInCD = switchImput.isOn
+        accessToCoreData.saveContext()
+        
+        navigationController?.popViewController(animated: true)
         }
         
-        previousToDoTVC.listOfToDo.append(newToDo)
-        previousToDoTVC.tableView.reloadData()
-        navigationController? . popViewController(animated: true)
-    }
-    
+        
     /*
     // MARK: - Navigation
 
